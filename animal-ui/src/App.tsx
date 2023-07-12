@@ -1,8 +1,8 @@
 import { Button, ButtonGroup, Grid, GridItem, Show } from "@chakra-ui/react";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
+import NavBar from "./components/NavBar";
 
 function App() {
-
   const { error } = useAuth0();
   if (error) {
     return <div>Oops... {error.message}</div>;
@@ -15,8 +15,8 @@ function App() {
         lg: `"nav nav" "aside main"`,
       }}
     >
-      <GridItem area="nav" bg="coral">
-        Nav
+      <GridItem area="nav">
+        <NavBar />
       </GridItem>
       <Show above="lg">
         <GridItem area="aside" bg="gold">
@@ -32,5 +32,5 @@ function App() {
 
 //export default App;
 export default withAuthenticationRequired(App, {
-  onRedirecting: () => <div>Redirecting you to the login page...</div>
-})
+  onRedirecting: () => <div>Redirecting you to the login page...</div>,
+});
