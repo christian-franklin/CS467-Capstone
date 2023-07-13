@@ -1,0 +1,22 @@
+{
+  "results": [
+    {
+      "id": 1,
+      "name": "Max",
+      "animal": "Dog",
+      "breed": "Labrador",
+      "age": 3,
+      "description": "Max is a friendly and energetic Labrador who loves to play fetch.",
+      "image": "url_to_image"
+    },
+    {
+      "id": 2,
+      "name": "Fluffy",
+      "animal": "Cat",
+      "breed": "Persian",
+      "age": 5,
+      "description": "Fluffy is a calm and cuddly Persian cat who loves to nap in the sun.",
+      "image": "url_to_image"
+    }
+  ]
+}

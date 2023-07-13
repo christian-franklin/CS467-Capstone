@@ -1,6 +1,4 @@
-import { Button, ButtonGroup, Grid, GridItem, Show } from "@chakra-ui/react";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-import NavBar from "./components/NavBar";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import AnimalProfilePage from "./pages/AnimalProfilePage";
@@ -21,7 +19,8 @@ function App() {
   );
 }
 
-//export default App;
-export default withAuthenticationRequired(App, {
+export default App;
+/* export default withAuthenticationRequired(App, {
   onRedirecting: () => <div>Redirecting you to the login page...</div>,
 });
+*/
