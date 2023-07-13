@@ -1,5 +1,6 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
+import AnimalProfile from "../components/AnimalProfile";
 
 const AnimalProfilePage = () => {
   return (
@@ -15,7 +16,9 @@ const AnimalProfilePage = () => {
       <Show above="lg">
         <GridItem area="aside">Side bar</GridItem>
       </Show>
-      <GridItem area="main">main</GridItem>
+      <GridItem area="main">
+        <AnimalProfile />
+      </GridItem>
     </Grid>
   );
 };
