@@ -1,6 +1,9 @@
 import { Button, ButtonGroup, Grid, GridItem, Show } from "@chakra-ui/react";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import NavBar from "./components/NavBar";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import AnimalProfilePage from "./pages/AnimalProfilePage";
 
 function App() {
   const { error } = useAuth0();
@@ -9,20 +12,12 @@ function App() {
   }
 
   return (
-    <Grid
-      templateAreas={{
-        base: `"nav" "main"`,
-        lg: `"nav nav" "aside main"`,
-      }}
-    >
-      <GridItem area="nav">
-        <NavBar />
-      </GridItem>
-      <Show above="lg">
-        <GridItem area="aside">Side bar</GridItem>
-      </Show>
-      <GridItem area="main">main</GridItem>
-    </Grid>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/animal-profile" element={<AnimalProfilePage />} />
+      </Routes>
+    </Router>
   );
 }
 
