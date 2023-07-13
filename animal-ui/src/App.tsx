@@ -2,6 +2,7 @@ import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import AnimalProfilePage from "./pages/AnimalProfilePage";
+import Animals from "./pages/Animals";
 
 function App() {
   const { error } = useAuth0();
@@ -13,6 +14,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/animals" element={<Animals />} />
         <Route path="/animal-profile" element={<AnimalProfilePage />} />
       </Routes>
     </Router>

@@ -4,19 +4,46 @@
       "id": 1,
       "name": "Max",
       "animal": "Dog",
-      "breed": "Labrador",
+      "breed": "Shiba",
       "age": 3,
-      "description": "Max is a friendly and energetic Labrador who loves to play fetch.",
-      "image": "url_to_image"
+      "description": "Max is a friendly and energetic shiba who loves to play fetch.",
+      "image": "/shiba.jpeg"
     },
     {
       "id": 2,
       "name": "Fluffy",
       "animal": "Cat",
-      "breed": "Persian",
+      "breed": "Fluff Ball",
       "age": 5,
       "description": "Fluffy is a calm and cuddly Persian cat who loves to nap in the sun.",
-      "image": "url_to_image"
+      "image": "/fluffy-cat.jpeg"
+    },
+    {
+      "id": 3,
+      "name": "Kevin",
+      "animal": "Dog",
+      "breed": "Shiba",
+      "age": 3,
+      "description": "Kevin is cool.",
+      "image": "/shibainu.jpeg"
+    },
+    {
+      "id": 4,
+      "name": "Tabs",
+      "animal": "Cat",
+      "breed": "Tabby",
+      "age": 5,
+      "description": "Loves to look out the window all day.",
+      "image": "/tabby.jpeg"
+    },
+    {
+      "id": 5,
+      "name": "Whiskers",
+      "animal": "Cat",
+      "breed": "Grey",
+      "age": 4,
+      "description": "Loves to cuddle.",
+      "image": "/greycat.jpeg"
     }
   ]
 }

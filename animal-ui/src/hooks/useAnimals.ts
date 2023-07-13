@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
 
-interface Animal {
+export interface Animal {
   id: number;
   name: string;
   animal: string;
   breed: string;
   age: number;
   description: string;
+  image: string;
 }
 
 interface FetchAnimalResponse {
