@@ -14,8 +14,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/animals" element={<Animals />} />
-        <Route path="/animal-profile" element={<AnimalProfilePage />} />
+        {/* <Route path="/animals" element={<Animals />} /> */}
+        <Route path="/animal-profile/:id" element={<AnimalProfilePage />} />
       </Routes>
     </Router>
   );

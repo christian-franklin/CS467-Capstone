@@ -1,7 +1,8 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
+import AnimalGrid from "../components/AnimalGrid";
 
-const Home = () => {
+const Animals = () => {
   return (
     <Grid
       templateAreas={{
@@ -15,9 +16,11 @@ const Home = () => {
       <Show above="lg">
         <GridItem area="aside">Side bar</GridItem>
       </Show>
-      <GridItem area="main">main</GridItem>
+      <GridItem area="main">
+        <AnimalGrid />
+      </GridItem>
     </Grid>
   );
 };
 
-export default Home;
+export default Animals;

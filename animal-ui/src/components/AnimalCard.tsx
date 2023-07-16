@@ -43,7 +43,7 @@ const AnimalCard = ({ animal }: Props) => {
               Like
             </Button>
             <Button variant="ghost" colorScheme="blue">
-              <Link to={`/animal/${animal.id}`}>View Profile</Link>
+              <Link to={`/animal-profile/${animal.id}`}>View Profile</Link>
             </Button>
           </ButtonGroup>
         </CardFooter>
