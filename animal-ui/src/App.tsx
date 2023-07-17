@@ -1,9 +1,8 @@
-import { Button, ButtonGroup, Grid, GridItem, Show } from "@chakra-ui/react";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-import NavBar from "./components/NavBar";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import AnimalProfilePage from "./pages/AnimalProfilePage";
+import Animals from "./pages/Animals";
 
 function App() {
   const { error } = useAuth0();
@@ -15,13 +14,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/animal-profile" element={<AnimalProfilePage />} />
+        {/* <Route path="/animals" element={<Animals />} /> */}
+        <Route path="/animal-profile/:id" element={<AnimalProfilePage />} />
       </Routes>
     </Router>
   );
 }
 
-//export default App;
-export default withAuthenticationRequired(App, {
+export default App;
+/* export default withAuthenticationRequired(App, {
   onRedirecting: () => <div>Redirecting you to the login page...</div>,
 });
+*/
