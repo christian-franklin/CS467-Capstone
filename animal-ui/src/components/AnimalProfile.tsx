@@ -1,6 +1,20 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAnimals from "../hooks/useAnimals";
+import {
+  Box,
+  Center,
+  Divider,
+  Flex,
+  HStack,
+  Heading,
+  Image,
+  List,
+  ListItem,
+  Spinner,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 
 interface Animal {
   id: number;
@@ -12,10 +26,10 @@ interface Animal {
   image: string;
 }
 
-const AnimalProfile: React.FC = () => {
+const AnimalProfile = () => {
   const { animals, error } = useAnimals();
   const [animal, setAnimal] = useState<Animal | null>(null);
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     const foundAnimal = animals.find((animal) => animal.id === Number(id));
@@ -25,19 +39,44 @@ const AnimalProfile: React.FC = () => {
   }, [id, animals]);
 
   if (!animal) {
-    return <div>Loading...</div>;
+    return (
+      <Flex justifyContent="center" alignItems="center" height="60vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
   }
 
   return (
-    <div>
-      <h1>{animal.name}</h1>
-      <img src={animal.image} alt={animal.name} />
-      <p>
-        {animal.animal} - {animal.breed}
-      </p>
-      <p>Age: {animal.age}</p>
-      <p>{animal.description}</p>
-    </div>
+    <>
+      {error && <Text>{error}</Text>}
+
+      <Flex justifyContent="center" alignItems="center" height="60vh">
+        <HStack spacing="36px">
+          <Box boxSize="300px">
+            <Image
+              src={animal.image}
+              alt={animal.name}
+              width="100%"
+              height="100%"
+              objectFit="cover"
+            />
+          </Box>
+          <Center height="350px">
+            <Divider orientation="vertical" />
+          </Center>
+          <VStack align="start" spacing="4">
+            <Heading as="h2" size="xl">
+              {animal.name}
+            </Heading>
+            <List spacing={2}>
+              <ListItem>{animal.breed}</ListItem>
+              <ListItem>Age: {animal.age}</ListItem>
+              <ListItem>{animal.description}</ListItem>
+            </List>
+          </VStack>
+        </HStack>
+      </Flex>
+    </>
   );
 };
 

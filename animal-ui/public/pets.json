@@ -4,7 +4,7 @@
       "id": 1,
       "name": "Max",
       "animal": "Dog",
-      "breed": "Shiba",
+      "breed": "Shiba Inu",
       "age": 3,
       "description": "Max is a friendly and energetic shiba who loves to play fetch.",
       "image": "/shiba.jpeg"
@@ -13,8 +13,8 @@
       "id": 2,
       "name": "Fluffy",
       "animal": "Cat",
-      "breed": "Fluff Ball",
-      "age": 5,
+      "breed": "Persian",
+      "age": 1,
       "description": "Fluffy is a calm and cuddly Persian cat who loves to nap in the sun.",
       "image": "/fluffy-cat.jpeg"
     },
@@ -22,16 +22,16 @@
       "id": 3,
       "name": "Kevin",
       "animal": "Dog",
-      "breed": "Shiba",
+      "breed": "Shiba Inu",
       "age": 3,
-      "description": "Kevin is cool.",
+      "description": "Kevin is a good boy.",
       "image": "/shibainu.jpeg"
     },
     {
       "id": 4,
       "name": "Tabs",
       "animal": "Cat",
-      "breed": "Tabby",
+      "breed": "American Shorthair",
       "age": 5,
       "description": "Loves to look out the window all day.",
       "image": "/tabby.jpeg"
@@ -40,7 +40,7 @@
       "id": 5,
       "name": "Whiskers",
       "animal": "Cat",
-      "breed": "Grey",
+      "breed": "Russian Blue",
       "age": 4,
       "description": "Loves to cuddle.",
       "image": "/greycat.jpeg"

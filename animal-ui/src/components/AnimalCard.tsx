@@ -9,6 +9,7 @@ import {
   CardFooter,
   ButtonGroup,
   Button,
+  Center,
 } from "@chakra-ui/react";
 import { Animal } from "../hooks/useAnimals";
 import { Link } from "react-router-dom";
@@ -22,12 +23,16 @@ const AnimalCard = ({ animal }: Props) => {
     <>
       <Card maxW="sm">
         <CardBody>
-          <Image
-            src={animal.image}
-            alt=""
-            borderRadius={10}
-            overflow="hidden"
-          />
+          <Center>
+            <Image
+              src={animal.image}
+              alt=""
+              borderRadius={10}
+              overflow="hidden"
+              objectFit="cover"
+              boxSize="250px"
+            />
+          </Center>
           <Stack mt="6" spacing="3">
             <Heading size="md">{animal.name}</Heading>
             <Text>{animal.description}</Text>

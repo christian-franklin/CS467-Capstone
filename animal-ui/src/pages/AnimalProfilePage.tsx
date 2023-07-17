@@ -7,15 +7,12 @@ const AnimalProfilePage = () => {
     <Grid
       templateAreas={{
         base: `"nav" "main"`,
-        lg: `"nav nav" "aside main"`,
+        lg: `"nav nav" "main main"`,
       }}
     >
       <GridItem area="nav">
         <NavBar />
       </GridItem>
-      <Show above="lg">
-        <GridItem area="aside">Side bar</GridItem>
-      </Show>
       <GridItem area="main">
         <AnimalProfile />
       </GridItem>
