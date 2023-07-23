@@ -1,10 +1,16 @@
 import { SimpleGrid, Text } from "@chakra-ui/react";
-import AnimalCardContainer from "./AnimalCardContainer";
 import useAnimals from "../hooks/useAnimals";
 import AnimalCard from "./AnimalCard";
 
-const AnimalProfileGrid = () => {
-  const { animals, error } = useAnimals();
+interface Props {
+  filterOptions?: {
+    animalType: string[];
+    animalBehavior: string[];
+  };
+}
+
+const AnimalGrid = ({ filterOptions }: Props) => {
+  const { animals, error } = useAnimals(filterOptions);
   return (
     <>
       {error && <Text>{error}</Text>}
@@ -17,4 +23,4 @@ const AnimalProfileGrid = () => {
   );
 };
 
-export default AnimalProfileGrid;
+export default AnimalGrid;

@@ -3,47 +3,57 @@
     {
       "id": 1,
       "name": "Max",
-      "animal": "Dog",
+      "animal": "dog",
       "breed": "Shiba Inu",
       "age": 3,
       "description": "Max is a friendly and energetic shiba who loves to play fetch.",
-      "image": "/shiba.jpeg"
+      "image": "/shiba.jpeg",
+      "disposition": ["Good with other animals", "Good with children"],
+      "date_created": "06/20/2023"
     },
     {
       "id": 2,
       "name": "Fluffy",
-      "animal": "Cat",
+      "animal": "cat",
       "breed": "Persian",
       "age": 1,
       "description": "Fluffy is a calm and cuddly Persian cat who loves to nap in the sun.",
-      "image": "/fluffy-cat.jpeg"
+      "image": "/fluffy-cat.jpeg",
+      "disposition": ["Good with other animals", "Good with children"],
+      "date_created": "06/21/2023"
     },
     {
       "id": 3,
       "name": "Kevin",
-      "animal": "Dog",
+      "animal": "dog",
       "breed": "Shiba Inu",
       "age": 3,
       "description": "Kevin is a good boy.",
-      "image": "/shibainu.jpeg"
+      "image": "/shibainu.jpeg",
+      "disposition": ["Good with other animals", "Good with children"],
+      "date_created": "06/22/2023"
     },
     {
       "id": 4,
       "name": "Tabs",
-      "animal": "Cat",
+      "animal": "cat",
       "breed": "American Shorthair",
       "age": 5,
       "description": "Loves to look out the window all day.",
-      "image": "/tabby.jpeg"
+      "image": "/tabby.jpeg",
+      "disposition": ["Good with other animals"],
+      "date_created": "06/23/2023"
     },
     {
       "id": 5,
       "name": "Whiskers",
-      "animal": "Cat",
+      "animal": "cat",
       "breed": "Russian Blue",
       "age": 4,
       "description": "Loves to cuddle.",
-      "image": "/greycat.jpeg"
+      "image": "/greycat.jpeg",
+      "disposition": ["Animal must be leashed at all times"],
+      "date_created": "06/24/2023"
     }
   ]
 }

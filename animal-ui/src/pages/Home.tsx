@@ -1,8 +1,13 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import AnimalGrid from "../components/AnimalGrid";
+import FilterList from "../components/FilterList";
+import { useState } from "react";
 
 const Animals = () => {
+  const [animalType, setAnimalType] = useState<string[]>([]);
+  const [animalBehavior, setAnimalBehavior] = useState<string[]>([]);
+
   return (
     <Grid
       templateAreas={{
@@ -14,10 +19,17 @@ const Animals = () => {
         <NavBar />
       </GridItem>
       <Show above="lg">
-        <GridItem area="aside">Side bar</GridItem>
+        <GridItem area="aside">
+          <FilterList
+            animalType={animalType}
+            setAnimalType={setAnimalType}
+            animalBehavior={animalBehavior}
+            setAnimalBehavior={setAnimalBehavior}
+          />
+        </GridItem>
       </Show>
       <GridItem area="main">
-        <AnimalGrid />
+        <AnimalGrid filterOptions={{ animalType, animalBehavior }} />
       </GridItem>
     </Grid>
   );

@@ -24,6 +24,8 @@ interface Animal {
   age: number;
   description: string;
   image: string;
+  disposition: string[];
+  date_created: string;
 }
 
 const AnimalProfile = () => {
