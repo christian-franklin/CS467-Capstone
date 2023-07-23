@@ -19,7 +19,7 @@ const Animals = () => {
         <NavBar />
       </GridItem>
       <Show above="lg">
-        <GridItem area="aside">
+        <GridItem area="aside" padding="10px">
           <FilterList
             animalType={animalType}
             setAnimalType={setAnimalType}

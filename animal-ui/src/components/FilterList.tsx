@@ -21,7 +21,14 @@ const FilterList = ({
   setAnimalBehavior,
 }: Props) => {
   return (
-    <Box width="200px" padding="20px" border="1px" borderRadius="md">
+    <Box
+      width="200px"
+      padding="20px"
+      border="1px"
+      borderRadius="md"
+      position="sticky"
+      top="0"
+    >
       <VStack spacing={4} align="stretch">
         <Text fontSize="lg" fontWeight="bold">
           Animal Type:
@@ -43,7 +50,7 @@ const FilterList = ({
             Other
           </Checkbox>
         </CheckboxGroup>
-        <Divider />
+        <Divider borderWidth="1px" borderColor="gray.500" />
         <Text fontSize="lg" fontWeight="bold">
           Animal Behavior:
         </Text>

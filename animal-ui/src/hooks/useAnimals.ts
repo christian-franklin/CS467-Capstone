@@ -12,6 +12,7 @@ export interface Animal {
   image: string;
   disposition: string[];
   date_created: string;
+  availability: string;
 }
 
 interface FetchAnimalResponse {
@@ -31,11 +32,15 @@ const useAnimals = (filterOptions?: FilterOptions) => {
     const controller = new AbortController();
 
     apiClient
-      .get<FetchAnimalResponse>("/pets.json", { signal: controller.signal })
+      .get<FetchAnimalResponse>("/animals", { signal: controller.signal })
       .then((res) => {
         let filteredAnimals = res.data.results;
 
-        if (filterOptions) {
+        if (
+          filterOptions &&
+          (filterOptions.animalType.length > 0 ||
+            filterOptions.animalBehavior.length > 0)
+        ) {
           const { animalType, animalBehavior } = filterOptions;
           filteredAnimals = filteredAnimals.filter(
             (animal) =>

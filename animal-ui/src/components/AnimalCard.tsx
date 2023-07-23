@@ -10,6 +10,7 @@ import {
   ButtonGroup,
   Button,
   Center,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { Animal } from "../hooks/useAnimals";
 import { Link } from "react-router-dom";
@@ -19,9 +20,17 @@ interface Props {
 }
 
 const AnimalCard = ({ animal }: Props) => {
+  const cardBackgroundColor = useColorModeValue("gray.100", "gray.1000");
+  const cardBorderColor = useColorModeValue("gray.350", "gray.900");
+
   return (
     <>
-      <Card maxW="sm">
+      <Card
+        maxW="sm"
+        bg={cardBackgroundColor}
+        borderWidth="1px"
+        borderColor={cardBorderColor}
+      >
         <CardBody>
           <Center>
             <Image
@@ -36,12 +45,12 @@ const AnimalCard = ({ animal }: Props) => {
           <Stack mt="6" spacing="3">
             <Heading size="md">{animal.name}</Heading>
             <Text>{animal.description}</Text>
-            <Text color="white" fontSize="1xl">
+            <Text>
               Breed: {animal.breed} | Age: {animal.age}
             </Text>
           </Stack>
         </CardBody>
-        <Divider />
+        <Divider borderWidth="1px" borderColor="gray.500" />
         <CardFooter>
           <ButtonGroup spacing="2">
             <Button variant="solid" colorScheme="blue">
