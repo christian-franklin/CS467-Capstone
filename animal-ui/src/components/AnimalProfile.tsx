@@ -24,6 +24,9 @@ interface Animal {
   age: number;
   description: string;
   image: string;
+  disposition: string[];
+  date_created: string;
+  availability: string;
 }
 
 const AnimalProfile = () => {
@@ -32,8 +35,9 @@ const AnimalProfile = () => {
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    const foundAnimal = animals.find((animal) => animal.id === Number(id));
-    console.log(foundAnimal);
+    const foundAnimal = animals.find(
+      (animal) => Number(animal.id) === Number(id)
+    );
 
     setAnimal(foundAnimal || null);
   }, [id, animals]);
