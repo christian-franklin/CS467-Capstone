@@ -1,5 +1,5 @@
 const express = require("express");
-const { Datastore } = require('@google-cloud/datastore');
+const { Datastore } = require("@google-cloud/datastore");
 const bodyParser = require("body-parser");
 const request = require("request");
 const jwt = require("express-jwt");
@@ -11,7 +11,7 @@ const datastore = new Datastore({
   projectId: process.env.projectId,
 });
 
-const ANIMAL = "Animal"
+const ANIMAL = "Animal";
 
 const app = express();
 
@@ -66,32 +66,46 @@ app.use(function (err, req, res, next) {
   }
 });
 
-
 // ****************************************
 // CRUD functionality for animal profiles *
 // ****************************************
 
-app.get('/', async (req, res) => {
-  console.log('Application entrance');
-  res.json("success");
-})
+/**
+ * Models
+ */
 
-app.get('/animals', async (req, res) => {
-  const query = datastore.createQuery('Animal');
-  const [animals] = await datastore.runQuery(query);
-  res.json(animals);
+function get_animals() {
+  const query = datastore.createQuery(ANIMAL);
+  return datastore.runQuery(query).then((entities) => {
+    return entities[0].map(fromDatastore);
+  });
+}
+
+app.get("/", async (req, res) => {
+  console.log("Application entrance");
+  res.json("success");
 });
 
-app.get('/animals/:id', async (req, res) => {
-  const animalKey = datastore.key(['Animal', parseInt(req.params.id, 10)]);
+/**
+ * Controllers
+ */
+app.get("/animals", (req, res) => {
+  const animals = get_animals().then((animals) => {
+    res.status(200).json(animals);
+  });
+});
+
+app.get("/animals/:id", async (req, res) => {
+  const animalKey = datastore.key(["Animal", parseInt(req.params.id, 10)]);
   const [animal] = await datastore.get(animalKey);
-  if (!animal) return res.status(404).send('The animal with the given ID was not found.');
+  if (!animal)
+    return res.status(404).send("The animal with the given ID was not found.");
   res.json(animal);
 });
 
-app.post('/animals', async (req, res) => {
+app.post("/animals", async (req, res) => {
   const { key, ...animalData } = req.body;
-  const animalKey = datastore.key(['Animal']);
+  const animalKey = datastore.key(["Animal"]);
   const entity = {
     key: animalKey,
     data: animalData,
@@ -100,10 +114,11 @@ app.post('/animals', async (req, res) => {
   res.json({ id: animalKey.id, ...animalData });
 });
 
-app.put('/animals/:id', async (req, res) => {
-  const animalKey = datastore.key(['Animal', parseInt(req.params.id, 10)]);
+app.put("/animals/:id", async (req, res) => {
+  const animalKey = datastore.key(["Animal", parseInt(req.params.id, 10)]);
   const [animal] = await datastore.get(animalKey);
-  if (!animal) return res.status(404).send('The animal with the given ID was not found.');
+  if (!animal)
+    return res.status(404).send("The animal with the given ID was not found.");
 
   const { key, ...updatedData } = req.body;
   const entity = {
@@ -114,8 +129,8 @@ app.put('/animals/:id', async (req, res) => {
   res.json({ id: animalKey.id, ...animal, ...updatedData });
 });
 
-app.delete('/animals/:id', async (req, res) => {
-  const animalKey = datastore.key(['Animal', parseInt(req.params.id, 10)]);
+app.delete("/animals/:id", async (req, res) => {
+  const animalKey = datastore.key(["Animal", parseInt(req.params.id, 10)]);
   await datastore.delete(animalKey);
   res.status(204).send();
 });
