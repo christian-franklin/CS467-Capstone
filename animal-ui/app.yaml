@@ -1,0 +1,8 @@
+runtime: nodejs16
+handlers:
+    - url: /(.*\..+)$
+      static_files: dist/\1
+      upload: dist/(.*\..+)$
+    - url: /.*
+      static_files: dist/index.html
+      upload: dist/index.html
