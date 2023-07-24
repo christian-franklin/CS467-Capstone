@@ -14,6 +14,12 @@ const datastore = new Datastore({
 const ANIMAL = "Animal";
 
 const app = express();
+const cors = require('cors');
+app.use(
+  cors({
+    origin: '*',
+  })
+);
 
 const router = express.Router();
 const login = express.Router();
@@ -81,26 +87,47 @@ function get_animals() {
   });
 }
 
+function get_animal(id) {
+  const key = datastore.key([ANIMAL, parseInt(id, 10)]);
+  return datastore.get(key).then((entity) => {
+    if (entity[0] === undefined || entity[0] === null) {
+      // No entity found. Don't try to add the id attribute
+      return entity;
+    } else {
+      // Use Array.map to call the function fromDatastore. This function
+      // adds id attribute to every element in the array entity
+      return entity.map(fromDatastore);
+    }
+  });
+}
+
+/**
+ * Controllers
+ */
+
 app.get("/", async (req, res) => {
   console.log("Application entrance");
   res.json("success");
 });
 
-/**
- * Controllers
- */
-app.get("/animals", (req, res) => {
+router.get("/animals", cors(), (req, res) => {
   const animals = get_animals().then((animals) => {
-    res.status(200).json(animals);
+    result = { "results" : animals };
+
+    res.status(200).json(result);
   });
 });
 
-app.get("/animals/:id", async (req, res) => {
-  const animalKey = datastore.key(["Animal", parseInt(req.params.id, 10)]);
-  const [animal] = await datastore.get(animalKey);
-  if (!animal)
-    return res.status(404).send("The animal with the given ID was not found.");
-  res.json(animal);
+router.get("/animals/:id", cors(), (req, res) => {
+  get_animal(req.params.id).then((animal) => {
+    if (animal[0] === undefined || animal[0] === null) {
+      // The 0th element is undefined. This means there is no animal with this id
+      res.status(404).json({ Error: "No boat with this animal id exists" });
+    } else {
+      // Return the 0th element which is the animal with this id
+      res.status(200).json(animal[0]);
+    }
+  });
 });
 
 app.post("/animals", async (req, res) => {
