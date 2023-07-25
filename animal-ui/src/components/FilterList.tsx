@@ -5,6 +5,7 @@ import {
   VStack,
   Divider,
   Text,
+  useColorModeValue,
 } from "@chakra-ui/react";
 
 interface Props {
@@ -20,6 +21,9 @@ const FilterList = ({
   animalBehavior,
   setAnimalBehavior,
 }: Props) => {
+  const cardBackgroundColor = useColorModeValue("gray.100", "gray.700");
+  const cardBorderColor = useColorModeValue("gray.350", "white");
+
   return (
     <Box
       width="200px"
@@ -28,6 +32,8 @@ const FilterList = ({
       borderRadius="md"
       position="sticky"
       top="0"
+      bg={cardBackgroundColor}
+      borderColor={cardBorderColor}
     >
       <VStack spacing={4} align="stretch">
         <Text fontSize="lg" fontWeight="bold">

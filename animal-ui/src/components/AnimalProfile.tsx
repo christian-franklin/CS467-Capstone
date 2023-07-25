@@ -66,7 +66,11 @@ const AnimalProfile = () => {
             />
           </Box>
           <Center height="350px">
-            <Divider orientation="vertical" />
+            <Divider
+              orientation="vertical"
+              borderWidth="1px"
+              borderColor="gray.500"
+            />
           </Center>
           <VStack align="start" spacing="4">
             <Heading as="h2" size="xl">
