@@ -20,7 +20,7 @@ interface Props {
 }
 
 const AnimalCard = ({ animal }: Props) => {
-  const cardBackgroundColor = useColorModeValue("gray.100", "gray.1000");
+  const cardBackgroundColor = useColorModeValue("gray.100", "gray.700");
   const cardBorderColor = useColorModeValue("gray.350", "gray.900");
 
   return (
