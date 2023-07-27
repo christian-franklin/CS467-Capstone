@@ -78,7 +78,7 @@ app.use(function (err, req, res, next) {
 // ****************************************
 
 /*
- ----- Models -----
+ ----- Model Functions -----
 */
 
 // CREATE animal
@@ -122,12 +122,7 @@ function post_animal(
   });
 }
 
-// READ animal
-
-// UPDATE animal
-
-// DELETE animal
-
+// READ animal(s)
 function get_animals() {
   const query = datastore.createQuery(ANIMAL);
   return datastore.runQuery(query).then((entities) => {
@@ -149,8 +144,55 @@ function get_animal(animal_id) {
   });
 }
 
+// UPDATE animal
+function patch_animal(
+  animal_id,
+  name,
+  updated_animal,
+  breed,
+  age,
+  description,
+  image,
+  disposition,
+  date_created,
+  availability
+) {
+  const key = datastore.key([ANIMAL, parseInt(animal_id, 10)]);
+  const updated_animal = {
+    name: name,
+    animal: updated_animal,
+    breed: breed,
+    age: age,
+    description: description,
+    image: image,
+    disposition: disposition,
+    date_created: date_created,
+    availability: availability,
+  };
+  return datastore.save({ key: key, data: updated_animal }).then(() => {
+    return {
+      id: key.id,
+      name: updated_animal.name,
+      animal: updated_animal.animal,
+      breed: updated_animal.breed,
+      age: updated_animal.age,
+      description: updated_animal.description,
+      image: updated_animal.image,
+      disposition: updated_animal.disposition,
+      date_created: updated_animal.date_created,
+      availability: updated_animal.availability,
+    };
+  });
+}
+
+// DELETE animal
+function delete_animal(animal_id) {
+  const key = datastore.key([ANIMAL, parseInt(animal_id, 10)]);
+  return datastore.delete(key);
+}
+
 /*
- ----- Controllers -----
+ ----- Controller Functions -----
 */
 
 // POST animal
@@ -187,11 +229,7 @@ router.post("/animals", function (req, res) {
   }
 });
 
-app.get("/", async (req, res) => {
-  console.log("Application entrance");
-  res.json("success");
-});
-
+// GET animal
 router.get("/animals", cors(), (req, res) => {
   const animals = get_animals().then((animals) => {
     result = { results: animals };
@@ -200,8 +238,8 @@ router.get("/animals", cors(), (req, res) => {
   });
 });
 
-router.get("/animals/:id", cors(), (req, res) => {
-  get_animal(req.params.id).then((animal) => {
+router.get("/animals/:animal_id", cors(), (req, res) => {
+  get_animal(req.params.animal_id).then((animal) => {
     if (animal[0] === undefined || animal[0] === null) {
       // The 0th element is undefined. This means there is no animal with this id
       res.status(404).json({ Error: "No animal with this animal id exists" });
@@ -212,26 +250,62 @@ router.get("/animals/:id", cors(), (req, res) => {
   });
 });
 
-app.put("/animals/:id", async (req, res) => {
-  const animalKey = datastore.key(["Animal", parseInt(req.params.id, 10)]);
-  const [animal] = await datastore.get(animalKey);
-  if (!animal)
-    return res.status(404).send("The animal with the given ID was not found.");
-
-  const { key, ...updatedData } = req.body;
-  const entity = {
-    key: animalKey,
-    data: { ...animal, ...updatedData },
-  };
-  await datastore.update(entity);
-  res.json({ id: animalKey.id, ...animal, ...updatedData });
+// PATCH animal
+router.patch("/animals/:animal_id", function (req, res) {
+  if (
+    (req.body.name === undefined || req.body.name === null,
+    req.body.animal === undefined || req.body.animal === null,
+    req.body.breed === undefined || req.body.breed === null,
+    req.body.age === undefined || req.body.age === null,
+    req.body.description === undefined || req.body.description === null,
+    req.body.image === undefined || req.body.image === null,
+    req.body.disposition === undefined || req.body.disposition === null,
+    req.body.date_created === undefined || req.body.date_created === null,
+    req.body.availability === undefined || req.body.availability === null)
+  )
+    res.status(400).json({
+      Error:
+        "The request object is missing at least one of the required attributes",
+    });
+  else {
+    get_animal(req.params.animal_id).then((animal) => {
+      if (animal[0] === undefined || animal[0] === null) {
+        res.status(404).json({ Error: "No animal with this animal_id exists" });
+      } else {
+        patch_animal(
+          req.body.name,
+          req.body.animal,
+          req.body.breed,
+          req.body.age,
+          req.body.description,
+          req.body.image,
+          req.body.disposition,
+          req.body.date_created,
+          req.body.availability
+        ).then((key) => {
+          res.status(200).json(key);
+        });
+      }
+    });
+  }
 });
 
-app.delete("/animals/:id", async (req, res) => {
-  const animalKey = datastore.key(["Animal", parseInt(req.params.id, 10)]);
-  await datastore.delete(animalKey);
-  res.status(204).send();
+// DELETE animal
+router.delete("/animals/:animal_id", function (req, res) {
+  get_animal(req.params.animal_id).then((animal) => {
+    if (animal[0] === undefined || animal[0] === null) {
+      res.status(404).json({ Error: "No animal with this animal_id exists" });
+    } else {
+      delete_animal(req.params.animal_id).then(res.status(204).end());
+    }
+  });
 });
+
+app.get("/", async (req, res) => {
+  console.log("Application entrance");
+  res.json("success");
+});
+
 // ********************************************
 // END CRUD functionality for animal profiles *
 // ********************************************
