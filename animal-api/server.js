@@ -148,7 +148,7 @@ function get_animal(animal_id) {
 function patch_animal(
   animal_id,
   name,
-  updated_animal,
+  animal,
   breed,
   age,
   description,
@@ -160,7 +160,7 @@ function patch_animal(
   const key = datastore.key([ANIMAL, parseInt(animal_id, 10)]);
   const updated_animal = {
     name: name,
-    animal: updated_animal,
+    animal: animal,
     breed: breed,
     age: age,
     description: description,
@@ -269,10 +269,12 @@ router.patch("/animals/:animal_id", function (req, res) {
     });
   else {
     get_animal(req.params.animal_id).then((animal) => {
+      console.log(animal);
       if (animal[0] === undefined || animal[0] === null) {
         res.status(404).json({ Error: "No animal with this animal_id exists" });
       } else {
         patch_animal(
+          req.params.animal_id,
           req.body.name,
           req.body.animal,
           req.body.breed,
@@ -283,6 +285,7 @@ router.patch("/animals/:animal_id", function (req, res) {
           req.body.date_created,
           req.body.availability
         ).then((key) => {
+          console.log(key);
           res.status(200).json(key);
         });
       }
