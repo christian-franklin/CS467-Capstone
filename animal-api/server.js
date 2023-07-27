@@ -14,10 +14,11 @@ const datastore = new Datastore({
 const ANIMAL = "Animal";
 
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
+const { post } = require("request");
 app.use(
   cors({
-    origin: '*',
+    origin: "*",
   })
 );
 
@@ -76,9 +77,56 @@ app.use(function (err, req, res, next) {
 // CRUD functionality for animal profiles *
 // ****************************************
 
-/**
- * Models
- */
+/*
+ ----- Models -----
+*/
+
+// CREATE animal
+function post_animal(
+  name,
+  animal,
+  breed,
+  age,
+  description,
+  image,
+  disposition,
+  date_created,
+  availability
+) {
+  var key = datastore.key(ANIMAL);
+  const new_animal = {
+    name: name,
+    animal: animal,
+    breed: breed,
+    age: age,
+    description: description,
+    image: image,
+    disposition: disposition,
+    date_created: date_created,
+    availability: availability,
+  };
+  return datastore.save({ key: key, data: new_animal }).then(() => {
+    console.log(new_animal);
+    return {
+      id: key.id,
+      name: new_animal.name,
+      animal: new_animal.animal,
+      breed: new_animal.breed,
+      age: new_animal.age,
+      description: new_animal.description,
+      image: new_animal.image,
+      disposition: new_animal.disposition,
+      date_created: new_animal.date_created,
+      availability: new_animal.availability,
+    };
+  });
+}
+
+// READ animal
+
+// UPDATE animal
+
+// DELETE animal
 
 function get_animals() {
   const query = datastore.createQuery(ANIMAL);
@@ -87,8 +135,8 @@ function get_animals() {
   });
 }
 
-function get_animal(id) {
-  const key = datastore.key([ANIMAL, parseInt(id, 10)]);
+function get_animal(animal_id) {
+  const key = datastore.key([ANIMAL, parseInt(animal_id, 10)]);
   return datastore.get(key).then((entity) => {
     if (entity[0] === undefined || entity[0] === null) {
       // No entity found. Don't try to add the id attribute
@@ -101,9 +149,43 @@ function get_animal(id) {
   });
 }
 
-/**
- * Controllers
- */
+/*
+ ----- Controllers -----
+*/
+
+// POST animal
+router.post("/animals", function (req, res) {
+  if (
+    (req.body.name === undefined || req.body.name === null,
+    req.body.animal === undefined || req.body.animal === null,
+    req.body.breed === undefined || req.body.breed === null,
+    req.body.age === undefined || req.body.age === null,
+    req.body.description === undefined || req.body.description === null,
+    req.body.image === undefined || req.body.image === null,
+    req.body.disposition === undefined || req.body.disposition === null,
+    req.body.date_created === undefined || req.body.date_created === null,
+    req.body.availability === undefined || req.body.availability === null)
+  ) {
+    res.status(400).json({
+      Error:
+        "The request object is missing at least one of the required attributes",
+    });
+  } else {
+    post_animal(
+      req.body.name,
+      req.body.animal,
+      req.body.breed,
+      req.body.age,
+      req.body.description,
+      req.body.image,
+      req.body.disposition,
+      req.body.date_created,
+      req.body.availability
+    ).then((animal) => {
+      res.status(201).json(animal);
+    });
+  }
+});
 
 app.get("/", async (req, res) => {
   console.log("Application entrance");
@@ -112,7 +194,7 @@ app.get("/", async (req, res) => {
 
 router.get("/animals", cors(), (req, res) => {
   const animals = get_animals().then((animals) => {
-    result = { "results" : animals };
+    result = { results: animals };
 
     res.status(200).json(result);
   });
@@ -122,23 +204,12 @@ router.get("/animals/:id", cors(), (req, res) => {
   get_animal(req.params.id).then((animal) => {
     if (animal[0] === undefined || animal[0] === null) {
       // The 0th element is undefined. This means there is no animal with this id
-      res.status(404).json({ Error: "No boat with this animal id exists" });
+      res.status(404).json({ Error: "No animal with this animal id exists" });
     } else {
       // Return the 0th element which is the animal with this id
       res.status(200).json(animal[0]);
     }
   });
-});
-
-app.post("/animals", async (req, res) => {
-  const { key, ...animalData } = req.body;
-  const animalKey = datastore.key(["Animal"]);
-  const entity = {
-    key: animalKey,
-    data: animalData,
-  };
-  await datastore.save(entity);
-  res.json({ id: animalKey.id, ...animalData });
 });
 
 app.put("/animals/:id", async (req, res) => {

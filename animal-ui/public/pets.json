@@ -59,6 +59,18 @@
       "disposition": ["Animal must be leashed at all times"],
       "date_created": "06/24/2023",
       "availability": "Available"
+    },
+    {
+      "id": 6,
+      "name": "Paige",
+      "animal": "Dog",
+      "breed": "Miniature Schnauzer",
+      "age": 8,
+      "description": "Loves going to the dog park",
+      "image": "/paige.jpeg",
+      "disposition": ["Will harass you for pets"],
+      "date_created": "7/22/2023",
+      "availability": "Adopted"
     }
   ]
 }

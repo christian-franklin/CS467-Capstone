@@ -1,5 +1,6 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
+import AdminToolsBar from "../components/AdminToolsBar";
 import AnimalGrid from "../components/AnimalGrid";
 import FilterList from "../components/FilterList";
 import { useState } from "react";
