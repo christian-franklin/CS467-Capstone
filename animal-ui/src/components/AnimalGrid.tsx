@@ -1,4 +1,4 @@
-import { SimpleGrid, Text } from "@chakra-ui/react";
+import { SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 import useAnimals from "../hooks/useAnimals";
 import AnimalCard from "./AnimalCard";
 
@@ -10,7 +10,18 @@ interface Props {
 }
 
 const AnimalGrid = ({ filterOptions }: Props) => {
-  const { animals, error } = useAnimals(filterOptions);
+  const { animals, error, isLoading } = useAnimals(filterOptions);
+
+  if (isLoading)
+    return (
+      <Spinner
+        thickness="4px"
+        speed="0.65s"
+        emptyColor="gray.200"
+        color="blue.500"
+        size="xl"
+      />
+    );
   return (
     <>
       {error && <Text>{error}</Text>}

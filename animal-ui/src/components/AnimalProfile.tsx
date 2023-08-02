@@ -3,12 +3,15 @@ import { useParams } from "react-router-dom";
 import useAnimals from "../hooks/useAnimals";
 import {
   Box,
+  Button,
+  ButtonGroup,
   Center,
   Divider,
   Flex,
   HStack,
   Heading,
   Image,
+  Link,
   List,
   ListItem,
   Spinner,
@@ -81,6 +84,16 @@ const AnimalProfile = () => {
               <ListItem>Age: {animal.age}</ListItem>
               <ListItem>{animal.description}</ListItem>
             </List>
+            <HStack spacing={4}>
+              <ButtonGroup spacing="2">
+                <Button variant="solid" colorScheme="blue">
+                  Like
+                </Button>
+                <Button variant="ghost" colorScheme="pink">
+                  <Link href={`/adopt-me/${animal.id}`}>Adopt Me!</Link>
+                </Button>
+              </ButtonGroup>
+            </HStack>
           </VStack>
         </HStack>
       </Flex>

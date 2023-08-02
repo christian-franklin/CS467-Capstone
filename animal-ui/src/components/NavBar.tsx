@@ -11,10 +11,16 @@ import {
   Image,
   Link,
 } from "@chakra-ui/react";
-import logo from "../assets/pet-logo.jpeg";
+import logo from "../assets/logo.png";
 import ColorModeSwitch from "./ColorModeSwitch";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function NavBar() {
+  const { logout } = useAuth0();
+
+  const handleLogout = () => {
+    logout();
+  };
   return (
     <>
       <Box px={4}>
@@ -40,8 +46,10 @@ export default function NavBar() {
                   <Avatar size={"sm"} src={"https://bit.ly/broken-link"} />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
-                  <MenuItem>View Profile</MenuItem>
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem>
+                    <Link href="/user-profile">View Profile</Link>
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>
               </Menu>
             </Stack>
