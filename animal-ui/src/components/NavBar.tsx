@@ -11,7 +11,7 @@ import {
   Image,
   Link,
 } from "@chakra-ui/react";
-import logo from "../assets/pet-logo.jpeg";
+import logo from "../assets/logo.png";
 import ColorModeSwitch from "./ColorModeSwitch";
 import { useAuth0 } from "@auth0/auth0-react";
 
