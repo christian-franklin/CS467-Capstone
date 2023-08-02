@@ -43,7 +43,7 @@ export default function NavBar() {
                   cursor={"pointer"}
                   minW={0}
                 >
-                  <Avatar size={"sm"} src={"https://bit.ly/broken-link"} />
+                  <Avatar size={"sm"} />
                 </MenuButton>
                 <MenuList alignItems={"center"}>
                   <MenuItem>
