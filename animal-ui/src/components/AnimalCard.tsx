@@ -71,8 +71,15 @@ const AnimalCard = ({ animal }: Props) => {
               </Badge>
             </Box>
             <Text>{animal.description}</Text>
-            <Text>
-              Breed: {animal.breed} | Age: {animal.age}
+            <Text fontWeight="bold">
+              Breed:{" "}
+              <Text as="span" fontWeight="normal">
+                {animal.breed}
+              </Text>{" "}
+              | Age:{" "}
+              <Text as="span" fontWeight="normal">
+                {animal.age}
+              </Text>
             </Text>
           </Stack>
         </CardBody>
