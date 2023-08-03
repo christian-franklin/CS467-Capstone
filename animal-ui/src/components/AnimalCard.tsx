@@ -11,7 +11,10 @@ import {
   Button,
   Center,
   useColorModeValue,
+  Badge,
+  Box,
 } from "@chakra-ui/react";
+import { BiLike } from "react-icons/bi";
 import { Animal } from "../hooks/useAnimals";
 import { Link } from "react-router-dom";
 
@@ -19,8 +22,23 @@ interface Props {
   animal: Animal;
 }
 
+const getBadgeColor = (availability: string) => {
+  switch (availability) {
+    case "Adopted":
+      return "green";
+    case "Pending":
+      return "yellow";
+    case "Not Available":
+      return "red";
+    case "Available":
+      return "blue";
+    default:
+      return "gray";
+  }
+};
+
 const AnimalCard = ({ animal }: Props) => {
-  const cardBackgroundColor = useColorModeValue("gray.100", "gray.1000");
+  const cardBackgroundColor = useColorModeValue("gray.100", "gray.700");
   const cardBorderColor = useColorModeValue("gray.350", "gray.900");
 
   return (
@@ -43,7 +61,15 @@ const AnimalCard = ({ animal }: Props) => {
             />
           </Center>
           <Stack mt="6" spacing="3">
-            <Heading size="md">{animal.name}</Heading>
+            <Box display="flex" alignItems="center">
+              <Heading size="md" mr={2}>
+                {animal.name}
+              </Heading>
+              <Badge colorScheme={getBadgeColor(animal.availability)}>
+                {" "}
+                {animal.availability}
+              </Badge>
+            </Box>
             <Text>{animal.description}</Text>
             <Text>
               Breed: {animal.breed} | Age: {animal.age}
@@ -53,7 +79,7 @@ const AnimalCard = ({ animal }: Props) => {
         <Divider borderWidth="1px" borderColor="gray.500" />
         <CardFooter>
           <ButtonGroup spacing="2">
-            <Button variant="solid" colorScheme="blue">
+            <Button variant="solid" colorScheme="blue" leftIcon={<BiLike />}>
               Like
             </Button>
             <Button variant="ghost" colorScheme="blue">

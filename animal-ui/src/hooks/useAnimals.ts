@@ -27,10 +27,12 @@ interface FilterOptions {
 const useAnimals = (filterOptions?: FilterOptions) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
 
+    setLoading(true);
     apiClient
       .get<FetchAnimalResponse>("/animals", { signal: controller.signal })
       .then((res) => {
@@ -51,18 +53,19 @@ const useAnimals = (filterOptions?: FilterOptions) => {
                 ))
           );
         }
-
+        setLoading(false);
         setAnimals(filteredAnimals);
       })
       .catch((err) => {
         if (err instanceof CanceledError) return;
         setError(err.message);
+        setLoading(false);
       });
 
     return () => controller.abort();
   }, [filterOptions]);
 
-  return { animals, error };
+  return { animals, error, isLoading };
 };
 
 export default useAnimals;
