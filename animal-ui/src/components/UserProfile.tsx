@@ -8,7 +8,7 @@ interface User {
 
 const UserProfile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0<User>();
-
+  
   if (isLoading) {
     return <div>Loading ...</div>;
   }

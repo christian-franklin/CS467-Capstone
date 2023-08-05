@@ -7,11 +7,13 @@ const jwksRsa = require("jwks-rsa");
 const { auth, requiresAuth } = require("express-openid-connect");
 const path = require("path");
 
+require("dotenv").config();
 const datastore = new Datastore({
   projectId: process.env.projectId,
 });
 
 const ANIMAL = "Animal";
+const USER = "User";
 
 const app = express();
 const cors = require("cors");
@@ -38,11 +40,17 @@ const CLIENT_ID = config.clientID;
 const CLIENT_SECRET = config.secret;
 const DOMAIN = process.env.DOMAIN;
 
-require("dotenv").config();
 app.use(express.json());
 
+app.use(auth(config));
 app.use("/", router);
 app.use("/login", login);
+
+// Middleware to make the `user` object available for all views
+app.use(function (req, res, next) {
+  res.locals.user = req.headers.authorization;
+  next();
+});
 
 /* ------------- Helper Functions -------------------------*/
 function fromDatastore(item) {
@@ -61,6 +69,20 @@ const checkJwt = jwt({
   // Validate the audience and the issuer.
   issuer: `https://${DOMAIN}/`,
   algorithms: ["RS256"],
+});
+
+const findJwt = jwt({
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: `https://${DOMAIN}/.well-known/jwks.json`,
+  }),
+
+  // Validate the audience and the issuer.
+  issuer: `https://${DOMAIN}/`,
+  algorithms: ["RS256"],
+  credentialsRequired: false,
 });
 
 // Custom error handling to send error as JSON instead of HTML
@@ -191,6 +213,20 @@ function delete_animal(animal_id) {
   return datastore.delete(key);
 }
 
+/* ------------- Begin Users Model Functions ------ */
+
+function get_users() {
+  const q = datastore.createQuery(USER);
+  return datastore.runQuery(q).then((entities) => {
+    // Use Array.map to call the function fromDatastore. This function
+    // adds id attribute to every element in the array at element 0 of
+    // the variable entities
+    return entities[0].map(fromDatastore);
+  });
+}
+
+/* ------------- End Users Model Functions ------------- */ 0;
+
 /*
  ----- Controller Functions -----
 */
@@ -230,13 +266,48 @@ router.post("/animals", function (req, res) {
 });
 
 // GET animal
-router.get("/animals", cors(), (req, res) => {
-  const animals = get_animals().then((animals) => {
-    result = { results: animals };
+router.get("/animals", cors(), findJwt, async (req, res) => {
+  let userSub = null;
 
-    res.status(200).json(result);
-  });
+  if (req.user) {
+    const { sub, email, name } = req.user;
+    userSub = sub; // Extract the user's sub from the oidc user object
+
+    try {
+      // Use a transaction to check if the user already exists
+      const transaction = datastore.transaction();
+      await transaction.run();
+
+      const query = datastore.createQuery(USER).filter("sub", "=", userSub);
+      const [existingUsers] = await transaction.runQuery(query);
+
+      if (existingUsers.length > 0) {
+        console.log("User already exists:", existingUsers[0]);
+      } else {
+        const key = datastore.key(USER);
+        const user = {
+          sub: userSub,
+          name: name,
+          email: email,
+        };
+        await transaction.save({ key: key, data: user });
+        console.log("New user saved:", user);
+      }
+
+      await transaction.commit();
+
+      const animals = await get_animals();
+      const result = { results: animals };
+      res.status(200).json(result);
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      res.status(500).json({ error: "Transaction failed" });
+    }
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
 });
+
 
 router.get("/animals/:animal_id", cors(), (req, res) => {
   get_animal(req.params.animal_id).then((animal) => {
