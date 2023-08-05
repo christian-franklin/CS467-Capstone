@@ -6,22 +6,21 @@ interface User {
   email: string;
 }
 
-const UserProfile = () => {
+const UserProfile: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth0<User>();
-  
+
   if (isLoading) {
     return <div>Loading ...</div>;
   }
 
   return (
-    isAuthenticated &&
-    user && (
+    isAuthenticated && user ? (
       <div>
         <img src={user.picture} alt={user.name} />
         <h2>{user.name}</h2>
         <p>{user.email}</p>
       </div>
-    )
+    ) : null
   );
 };
 
