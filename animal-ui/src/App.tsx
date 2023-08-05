@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import AnimalProfilePage from "./pages/AnimalProfilePage";
 import UserProfilePage from "./pages/UserProfilePage";
 import AdoptionPage from "./pages/AdoptionPage";
+import CreateAnimalPage from "./pages/CreateAnimalPage";
 
 function App() {
   const { error } = useAuth0();
@@ -18,6 +19,7 @@ function App() {
         <Route path="/animal-profile/:id" element={<AnimalProfilePage />} />
         <Route path="/user-profile" element={<UserProfilePage />} />
         <Route path="/adopt-me/:id" element={<AdoptionPage />} />
+        <Route path="/create-animal" element={<CreateAnimalPage />} />
       </Routes>
     </Router>
   );
