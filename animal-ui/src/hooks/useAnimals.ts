@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import apiClient from "../services/api-client";
 import { CanceledError } from "axios";
+import { useAuth0 } from "@auth0/auth0-react";
+import { AxiosError } from "axios";
 
 export interface Animal {
   id: number;
@@ -28,15 +30,24 @@ const useAnimals = (filterOptions?: FilterOptions) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const { getIdTokenClaims } = useAuth0(); 
 
   useEffect(() => {
-    const controller = new AbortController();
+    const fetchData = async () => {
+      try {
+        const idTokenClaims = await getIdTokenClaims();
+        if (idTokenClaims) {
+          const idToken = idTokenClaims.__raw;
+          apiClient.defaults.headers.common["Authorization"] = `Bearer ${idToken}`;
+        }
 
-    setLoading(true);
-    apiClient
-      .get<FetchAnimalResponse>("/animals", { signal: controller.signal })
-      .then((res) => {
-        let filteredAnimals = res.data.results;
+        const controller = new AbortController();
+        setLoading(true);
+        const response = await apiClient.get<FetchAnimalResponse>("/animals", {
+          signal: controller.signal,
+        });
+
+        let filteredAnimals = response.data.results;
 
         if (
           filterOptions &&
@@ -55,17 +66,22 @@ const useAnimals = (filterOptions?: FilterOptions) => {
         }
         setLoading(false);
         setAnimals(filteredAnimals);
-      })
-      .catch((err) => {
-        if (err instanceof CanceledError) return;
-        setError(err.message);
+      } catch (error) {
+        if ((error as AxiosError).isAxiosError) {
+          setError((error as AxiosError).message);
+        } else {
+          // Handle non-Axios error case
+          setError("An error occurred");
+        }
         setLoading(false);
-      });
+      }
+    };
 
-    return () => controller.abort();
-  }, [filterOptions]);
+    fetchData();
+  }, [filterOptions, getIdTokenClaims]); // Include getIdTokenClaims here
 
   return { animals, error, isLoading };
 };
+
 
 export default useAnimals;
