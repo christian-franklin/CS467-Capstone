@@ -86,11 +86,6 @@ const AdoptionForm = () => {
       <Box width={{ base: "90%", md: "50%" }}>
         <VStack spacing={5}>
           <FormControl isDisabled mb={4}>
-            <FormLabel>Animal ID</FormLabel>
-            <Input type="text" value={animal.id} />
-          </FormControl>
-
-          <FormControl isDisabled mb={4}>
             <FormLabel>Animal Name</FormLabel>
             <Input type="text" value={animal.name} />
           </FormControl>
