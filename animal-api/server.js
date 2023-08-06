@@ -335,10 +335,42 @@ async function user_remove_animal(animal_id, user_sub) {
 /*
  ----- Controller Functions -----
 */
+// GET user
+router.get("/users", cors(), findJwt, async (req, res) => {
+  let userSub = null;
+
+  if (req.user) {
+    const { sub, email, name } = req.user;
+    userSub = sub; // Extract the user's sub from the oidc user object
+
+    const users = await get_users();
+    const result = { results: users };
+    res.status(200).json(result);
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+});
+
+// GET user by sub
+router.get("/users/:sub", cors(), findJwt, async (req, res) => {
+  let userSub = null;
+
+  if (req.user) {
+    const { sub, email, name } = req.user;
+    userSub = sub; // Extract the user's sub from the oidc user object
+
+    const users = await get_user_id(userSub);
+    const result = { results: users };
+    res.status(200).json(result);
+  } else {
+    res.status(401).json({ error: "Unauthorized" });
+  }
+});
 
 // PATCH user - add animal to user
 router.patch(
   "/users/:sub/animals/:animal_id",
+  cors(),
   checkJwt,
   async function (req, res) {
     let userSub = null;
@@ -353,7 +385,10 @@ router.patch(
       userSub = sub; // Extract the user's sub from the oidc user object
 
       try {
-        const updateSuccess = await user_add_animal(req.params.animal_id, userSub);
+        const updateSuccess = await user_add_animal(
+          req.params.animal_id,
+          userSub
+        );
 
         if (updateSuccess) {
           res.status(200).json({
@@ -376,6 +411,7 @@ router.patch(
 // DELETE user - remove animal from user
 router.delete(
   "/users/:sub/animals/:animal_id",
+  cors(),
   checkJwt,
   async function (req, res) {
     let userSub = null;
@@ -390,7 +426,10 @@ router.delete(
       userSub = sub; // Extract the user's sub from the oidc user object
 
       try {
-        const updateSuccess = await user_remove_animal(req.params.animal_id, userSub);
+        const updateSuccess = await user_remove_animal(
+          req.params.animal_id,
+          userSub
+        );
 
         if (updateSuccess) {
           res.status(200).json({
