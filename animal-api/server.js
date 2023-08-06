@@ -225,11 +225,190 @@ function get_users() {
   });
 }
 
+async function user_add_animal(animal_id, user_sub) {
+  let user = await get_user_id(user_sub);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const user_id = user[datastore.KEY].id;
+  const user_key = datastore.key([USER, parseInt(user_id, 10)]);
+
+  console.log("Updating user", user_key);
+
+  // Check if the animal_id already exists in the user's animals array
+  if (user.animals && user.animals.includes(animal_id)) {
+    console.log("Animal ID already exists for this user.");
+    return null; // Or throw an error, or handle the case as needed
+  }
+
+  const user_update = {
+    Admin: user.Admin,
+    email: user.email,
+    name: user.name,
+    sub: user.sub,
+    animals:
+      user.animals === undefined ? [animal_id] : [...user.animals, animal_id],
+  };
+
+  // Update only the 'animals' property of the user entity
+  const saveResult = await datastore.update({
+    key: user_key,
+    data: user_update,
+  });
+
+  const results = {
+    id: user_id,
+    admin: user_update.Admin,
+    email: user_update.email,
+    name: user_update.name,
+    sub: user_update.sub,
+    animals: user_update.animals,
+  };
+  console.log(results);
+  return results;
+}
+
+async function get_user_id(sub) {
+  console.log("Finding user");
+  const query = datastore.createQuery(USER).filter("sub", "=", sub);
+  const [entities] = await datastore.runQuery(query);
+
+  if (!entities || entities.length === 0) {
+    // If no user is found, return null
+    return null;
+  }
+
+  const userEntity = entities[0];
+  return userEntity;
+}
+
+async function user_remove_animal(animal_id, user_sub) {
+  let user = await get_user_id(user_sub);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const user_id = user[datastore.KEY].id;
+  const user_key = datastore.key([USER, parseInt(user_id, 10)]);
+
+  console.log("Updating user", user_key);
+
+  // Check if the animal_id exists in the user's animals array
+  if (!user.animals || !user.animals.includes(animal_id)) {
+    throw new Error("Animal ID not found for this user.");
+  }
+
+  // Remove the animal_id from the animals array
+  const updatedAnimals = user.animals.filter((id) => id !== animal_id);
+
+  const user_update = {
+    Admin: user.Admin,
+    email: user.email,
+    name: user.name,
+    sub: user.sub,
+    animals: updatedAnimals,
+  };
+
+  const saveResult = await datastore.update({
+    key: user_key,
+    data: user_update,
+  });
+
+  const results = {
+    id: user_id,
+    admin: user_update.Admin,
+    email: user_update.email,
+    name: user_update.name,
+    sub: user_update.sub,
+    animals: user_update.animals,
+  };
+
+  console.log(results);
+  return results;
+}
+
 /* ------------- End Users Model Functions ------------- */ 0;
 
 /*
  ----- Controller Functions -----
 */
+
+// PATCH user - add animal to user
+router.patch(
+  "/users/:sub/animals/:animal_id",
+  checkJwt,
+  async function (req, res) {
+    let userSub = null;
+    console.log("Update request");
+
+    if (req.user === undefined) {
+      req.user = req.params.sub;
+    }
+
+    if (req.user) {
+      const { sub, email, name } = req.user;
+      userSub = sub; // Extract the user's sub from the oidc user object
+
+      try {
+        const updateSuccess = await user_add_animal(req.params.animal_id, userSub);
+
+        if (updateSuccess) {
+          res.status(200).json({
+            message: "Animal added successfully.",
+            results: updateSuccess,
+          });
+        } else {
+          res.status(500).json({ error: "Failed to update user's animals." });
+        }
+      } catch (error) {
+        console.error("Update error:", error);
+        res.status(500).json({ error: "An error occurred while updating." });
+      }
+    } else {
+      res.status(400).json({ error: "Invalid user." });
+    }
+  }
+);
+
+// DELETE user - remove animal from user
+router.delete(
+  "/users/:sub/animals/:animal_id",
+  checkJwt,
+  async function (req, res) {
+    let userSub = null;
+    console.log("Update request");
+
+    if (req.user === undefined) {
+      req.user = req.params.sub;
+    }
+
+    if (req.user) {
+      const { sub, email, name } = req.user;
+      userSub = sub; // Extract the user's sub from the oidc user object
+
+      try {
+        const updateSuccess = await user_remove_animal(req.params.animal_id, userSub);
+
+        if (updateSuccess) {
+          res.status(200).json({
+            message: "Animal removed successfully.",
+            results: updateSuccess,
+          });
+        } else {
+          res.status(500).json({ error: "Failed to update user's animals." });
+        }
+      } catch (error) {
+        console.error("Update error:", error);
+        res.status(500).json({ error: "An error occurred while updating." });
+      }
+    } else {
+      res.status(400).json({ error: "Invalid user." });
+    }
+  }
+);
 
 // POST animal
 router.post("/animals", function (req, res) {
@@ -274,7 +453,7 @@ router.get("/animals", cors(), findJwt, async (req, res) => {
     userSub = sub; // Extract the user's sub from the oidc user object
 
     try {
-      // Use a transaction to check if the user already exists
+      // Use a transaction to check if the user already exists (prevents race conditions)
       const transaction = datastore.transaction();
       await transaction.run();
 
@@ -307,7 +486,6 @@ router.get("/animals", cors(), findJwt, async (req, res) => {
     res.status(401).json({ error: "Unauthorized" });
   }
 });
-
 
 router.get("/animals/:animal_id", cors(), (req, res) => {
   get_animal(req.params.animal_id).then((animal) => {
