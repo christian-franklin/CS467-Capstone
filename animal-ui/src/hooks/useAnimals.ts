@@ -15,6 +15,8 @@ export interface Animal {
   disposition: string[];
   date_created: string;
   availability: string;
+  shelter_name: string;
+  shelter_email: string;
 }
 
 interface FetchAnimalResponse {
@@ -30,7 +32,7 @@ const useAnimals = (filterOptions?: FilterOptions) => {
   const [animals, setAnimals] = useState<Animal[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const { getIdTokenClaims } = useAuth0(); 
+  const { getIdTokenClaims } = useAuth0();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +40,9 @@ const useAnimals = (filterOptions?: FilterOptions) => {
         const idTokenClaims = await getIdTokenClaims();
         if (idTokenClaims) {
           const idToken = idTokenClaims.__raw;
-          apiClient.defaults.headers.common["Authorization"] = `Bearer ${idToken}`;
+          apiClient.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${idToken}`;
         }
 
         const controller = new AbortController();
@@ -82,6 +86,5 @@ const useAnimals = (filterOptions?: FilterOptions) => {
 
   return { animals, error, isLoading };
 };
-
 
 export default useAnimals;
