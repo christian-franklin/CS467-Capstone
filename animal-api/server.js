@@ -116,6 +116,9 @@ function post_animal(
   availability,
   shelter_name,
   shelter_email
+  availability,
+  shelter_name,
+  shelter_email
 ) {
   var key = datastore.key(ANIMAL);
   const new_animal = {
@@ -237,8 +240,9 @@ function get_users() {
   });
 }
 
-async function user_add_animal(animal_id, user_sub) {
-  let user = await get_user_id(user_sub);
+async function user_add_animal(animal_id, user_id) {
+  //let user = await get_user_id(user_sub);
+  let user = await get_user(user_id);
 
   if (!user) {
     throw new Error("User not found");
@@ -296,8 +300,24 @@ async function get_user_id(sub) {
   return userEntity;
 }
 
-async function user_remove_animal(animal_id, user_sub) {
-  let user = await get_user_id(user_sub);
+async function get_user(id) {
+  const key = datastore.key([USER, parseInt(id, 10)]);
+  return datastore.get(key).then((entity) => {
+    if (entity[0] === undefined || entity[0] === null) {
+      // No entity found. Don't try to add the id attribute
+      return entity;
+    } else {
+      // Use Array.map to call the function fromDatastore. This function
+      // adds id attribute to every element in the array entity
+      return entity.map(fromDatastore);
+    }
+  });
+}
+
+
+async function user_remove_animal(animal_id, user_id) {
+  // let user = await get_user_id(user_sub);
+  let user = await get_user(user_id);
 
   if (!user) {
     throw new Error("User not found");
@@ -364,7 +384,7 @@ router.get("/users", cors(), findJwt, async (req, res) => {
 });
 
 // GET user by sub
-router.get("/users/:sub", cors(), findJwt, async (req, res) => {
+router.get("/users/:id", cors(), findJwt, async (req, res) => {
   let userSub = null;
 
   if (req.user) {
@@ -555,7 +575,7 @@ router.get("/animals/:animal_id", cors(), (req, res) => {
 });
 
 // PATCH animal
-router.patch("/animals/:animal_id", function (req, res) {
+router.patch("/animals/:animal_id", cors(), function (req, res) {
   if (
     (req.body.name === undefined || req.body.name === null,
     req.body.animal === undefined || req.body.animal === null,
