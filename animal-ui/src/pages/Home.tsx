@@ -4,6 +4,7 @@ import AnimalGrid from "../components/AnimalGrid";
 import FilterList from "../components/FilterList";
 import { useState } from "react";
 import useUsers from "../hooks/useUsers";
+import ViewFavorites from "../components/ViewFavorites";
 
 const Animals = () => {
   const [animalType, setAnimalType] = useState<string[]>([]);
