@@ -49,7 +49,7 @@ const AnimalCard = ({ animal, user }: Props) => {
   const handleLike = async () => {
     try {
       const response = await fetch(
-        `https://animal-api-dot-cs467-capstone-393117.ue.r.appspot.com/users/${user?.sub}/animals/${animal.id}`,
+        `https://animal-api-dot-cs467-capstone-393117.ue.r.appspot.com/users/${user?.id}/animals/${animal.id}`,
         {
           method: "PATCH",
           headers: {

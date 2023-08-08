@@ -4,6 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 export interface User {
   id: number;
+  name: string;
   sub: string;
   admin: string | null;
   email: string;
@@ -11,7 +12,7 @@ export interface User {
 }
 
 interface UserResponse {
-  results: User;
+  results: User[];
 }
 
 const useUsers = () => {
@@ -33,10 +34,10 @@ const useUsers = () => {
 
         setLoading(true);
         const response = await apiClient.get<UserResponse>(
-          `/users/${idTokenClaims?.sub}`
+          `/users/${idTokenClaims?.id}`
         );
         setLoading(false);
-        setUser(response.data.results);
+        setUser(response.data.results[0]);
       } catch (err) {
         setLoading(false);
         setError("An error occurred while fetching user data.");
