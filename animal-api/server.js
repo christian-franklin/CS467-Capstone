@@ -289,15 +289,16 @@ async function user_add_animal(animal_id, u_id) {
 async function get_user_id(sub) {
   console.log("Finding user");
   const query = datastore.createQuery(USER).filter("sub", "=", sub);
-  const [entities] = await datastore.runQuery(query);
+  const [entity] = await datastore.runQuery(query);
 
-  if (!entities || entities.length === 0) {
-    // If no user is found, return null
-    return null;
+  if (entity[0] === undefined || entity[0] === null) {
+    // No entity found. Don't try to add the id attribute
+    return entity;
+  } else {
+    // Use Array.map to call the function fromDatastore. This function
+    // adds id attribute to every element in the array entity
+    return entity.map(fromDatastore);
   }
-
-  const userEntity = entities[0];
-  return userEntity;
 }
 
 async function get_user(id) {
@@ -313,7 +314,6 @@ async function get_user(id) {
     }
   });
 }
-
 
 async function user_remove_animal(animal_id, u_id) {
   // let user = await get_user_id(user_sub);
