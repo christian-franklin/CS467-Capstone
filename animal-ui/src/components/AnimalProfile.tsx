@@ -19,7 +19,6 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { BiLike } from "react-icons/bi";
 import { useAuth0 } from "@auth0/auth0-react";
 import useUsers from "../hooks/useUsers";
 import { AiOutlineHeart } from "react-icons/ai";
@@ -45,7 +44,9 @@ const AnimalProfile = () => {
   const [animal, setAnimal] = useState<Animal | null>(null);
   const { id: paramId } = useParams<{ id: string }>();
   const id = paramId || "";
-  const [liked, setLiked] = useState(user?.animals.includes(id));
+  const [liked, setLiked] = useState(
+    user && Array.isArray(user.animals) && user.animals.includes(id)
+  );
 
   const getBadgeColor = (availability: string) => {
     switch (availability) {
@@ -63,7 +64,7 @@ const AnimalProfile = () => {
   };
 
   useEffect(() => {
-    setLiked(user?.animals.includes(id));
+    setLiked(user && Array.isArray(user.animals) && user.animals.includes(id));
   }, [user, id]);
 
   useEffect(() => {
@@ -93,8 +94,17 @@ const AnimalProfile = () => {
         );
 
         if (response.ok) {
-          console.log(response);
-          setLiked(!liked); // Toggle the liked state
+          if (user && Array.isArray(user.animals)) {
+            if (liked) {
+              const index = user.animals.indexOf(id);
+              if (index > -1) {
+                user.animals.splice(index, 1);
+              }
+            } else {
+              user.animals.push(id);
+            }
+            setLiked(!liked);
+          }
         } else {
           const data = await response.json();
           console.error("Error updating animal like status:", data);

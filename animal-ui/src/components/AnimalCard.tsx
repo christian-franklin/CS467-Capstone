@@ -20,7 +20,7 @@ import { Animal } from "../hooks/useAnimals";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { User } from "../hooks/useUsers";
-import apiClient from "~/services/api-client";
+import apiClient from "../services/api-client";
 import { useAuth0 } from "@auth0/auth0-react";
 
 interface Props {
@@ -46,8 +46,11 @@ const getBadgeColor = (availability: string) => {
 
 const AnimalCard = ({ animal, user, onDelete }: Props) => {
   const [liked, setLiked] = useState(
-    user?.animals.includes(animal.id.toString())
+    user &&
+      Array.isArray(user.animals) &&
+      user.animals.includes(animal.id.toString())
   );
+
   const cardBackgroundColor = useColorModeValue("gray.100", "gray.700");
   const cardBorderColor = useColorModeValue("gray.350", "gray.900");
   const { getIdTokenClaims } = useAuth0();
