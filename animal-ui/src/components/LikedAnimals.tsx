@@ -4,7 +4,7 @@ import { SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 import AnimalCard from "./AnimalCard";
 
 const LikedAnimals = () => {
-  const { animals, error, isLoading } = useAnimals();
+  const { animals, error, isLoading, deleteAnimal } = useAnimals();
   const { user } = useUsers();
 
   const likedAnimals = animals.filter((animal) =>
@@ -29,7 +29,12 @@ const LikedAnimals = () => {
       {error && <Text>{error}</Text>}
       <SimpleGrid columns={{ sm: 1, md: 3, lg: 3 }} padding="10px" spacing={10}>
         {likedAnimals.map((animal) => (
-          <AnimalCard key={animal.id} animal={animal} user={user} />
+          <AnimalCard
+            key={animal.id}
+            animal={animal}
+            user={user}
+            onDelete={deleteAnimal}
+          />
         ))}
       </SimpleGrid>
     </>
