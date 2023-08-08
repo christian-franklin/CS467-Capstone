@@ -1,8 +1,11 @@
 import { Grid, GridItem, Show } from "@chakra-ui/react";
 import NavBar from "../components/NavBar";
 import CreateAnimal from "../components/CreateAnimal";
+import useUsers from "../hooks/useUsers";
 
 const CreateAnimalPage = () => {
+  const { user } = useUsers();
+
   return (
     <Grid
       templateAreas={{
@@ -11,7 +14,7 @@ const CreateAnimalPage = () => {
       }}
     >
       <GridItem area="nav">
-        <NavBar />
+        <NavBar user={user} />
       </GridItem>
       <GridItem area="main">
         <CreateAnimal />

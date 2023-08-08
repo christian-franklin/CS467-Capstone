@@ -1,18 +1,15 @@
-import { SimpleGrid, Spinner, Text } from "@chakra-ui/react";
+import useUsers from "../hooks/useUsers";
 import useAnimals from "../hooks/useAnimals";
+import { SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 import AnimalCard from "./AnimalCard";
-import { User } from "../hooks/useUsers";
 
-interface Props {
-  filterOptions?: {
-    animalType: string[];
-    animalBehavior: string[];
-  };
-  user: User | null;
-}
+const LikedAnimals = () => {
+  const { animals, error, isLoading, deleteAnimal } = useAnimals();
+  const { user } = useUsers();
 
-const AnimalGrid = ({ filterOptions, user }: Props) => {
-  const { animals, error, isLoading, deleteAnimal } = useAnimals(filterOptions);
+  const likedAnimals = animals.filter((animal) =>
+    user?.animals.includes(animal.id.toString())
+  );
 
   if (isLoading)
     return (
@@ -24,11 +21,14 @@ const AnimalGrid = ({ filterOptions, user }: Props) => {
         size="xl"
       />
     );
+
+  if (likedAnimals.length === 0) return <Text>No liked animals found.</Text>;
+
   return (
     <>
       {error && <Text>{error}</Text>}
       <SimpleGrid columns={{ sm: 1, md: 3, lg: 3 }} padding="10px" spacing={10}>
-        {animals.map((animal) => (
+        {likedAnimals.map((animal) => (
           <AnimalCard
             key={animal.id}
             animal={animal}
@@ -41,4 +41,4 @@ const AnimalGrid = ({ filterOptions, user }: Props) => {
   );
 };
 
-export default AnimalGrid;
+export default LikedAnimals;
