@@ -18,7 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/animal-profile/:id" element={<AnimalProfilePage />} />
-        <Route path="/user-profile" element={<UserProfilePage />} />
+        <Route path="/user-favorites" element={<UserProfilePage />} />
         <Route path="/adopt-me/:id" element={<AdoptionPage />} />
         <Route path="/create-animal" element={<CreateAnimalPage />} />
         <Route path="/update-animal/:id" element={<UpdateAnimalPage />} />

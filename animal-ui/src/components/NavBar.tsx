@@ -57,7 +57,7 @@ export default function NavBar({ user }: Props) {
                 </MenuButton>
                 <MenuList alignItems={"center"}>
                   <MenuItem>
-                    <Link href="/user-profile">View Profile</Link>
+                    <Link href="/user-favorites">Favorites</Link>
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>

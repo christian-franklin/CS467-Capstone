@@ -46,7 +46,6 @@ const useUsers = () => {
 
     fetchData();
   }, [getIdTokenClaims]);
-  console.log(user);
 
   return { user, error, isLoading };
 };

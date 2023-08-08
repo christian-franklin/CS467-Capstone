@@ -74,7 +74,6 @@ const AnimalCard = ({ animal, user, onDelete }: Props) => {
       );
 
       if (response.ok) {
-        console.log(response);
         setLiked(!liked); // Toggle the liked state
       } else {
         const data = await response.json();
