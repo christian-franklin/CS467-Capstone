@@ -83,8 +83,6 @@ const UpdateAnimal = () => {
           body: JSON.stringify(animal),
         }
       );
-      console.log(response);
-      console.log(JSON.stringify(animal));
 
       if (response.ok) {
         toast({
