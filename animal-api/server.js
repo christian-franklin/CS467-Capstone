@@ -240,9 +240,9 @@ function get_users() {
   });
 }
 
-async function user_add_animal(animal_id, user_id) {
+async function user_add_animal(animal_id, u_id) {
   //let user = await get_user_id(user_sub);
-  let user = await get_user(user_id);
+  let user = await get_user(us_id);
 
   if (!user) {
     throw new Error("User not found");
@@ -315,9 +315,9 @@ async function get_user(id) {
 }
 
 
-async function user_remove_animal(animal_id, user_id) {
+async function user_remove_animal(animal_id, u_id) {
   // let user = await get_user_id(user_sub);
-  let user = await get_user(user_id);
+  let user = await get_user(u_id);
 
   if (!user) {
     throw new Error("User not found");
