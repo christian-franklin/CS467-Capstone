@@ -115,9 +115,6 @@ function post_animal(
   date_created,
   availability,
   shelter_name,
-  shelter_email,
-  availability,
-  shelter_name,
   shelter_email
 ) {
   var key = datastore.key(ANIMAL);
