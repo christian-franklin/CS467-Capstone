@@ -6,7 +6,7 @@ export interface User {
   id: number;
   name: string;
   sub: string;
-  admin: string | null;
+  Admin: string | null;
   email: string;
   animals: string[];
 }

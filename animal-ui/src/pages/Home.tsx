@@ -3,10 +3,12 @@ import NavBar from "../components/NavBar";
 import AnimalGrid from "../components/AnimalGrid";
 import FilterList from "../components/FilterList";
 import { useState } from "react";
+import useUsers from "../hooks/useUsers";
 
 const Animals = () => {
   const [animalType, setAnimalType] = useState<string[]>([]);
   const [animalBehavior, setAnimalBehavior] = useState<string[]>([]);
+  const { user } = useUsers();
 
   return (
     <Grid
@@ -16,7 +18,7 @@ const Animals = () => {
       }}
     >
       <GridItem area="nav">
-        <NavBar />
+        <NavBar user={user} />
       </GridItem>
       <Show above="lg">
         <GridItem area="aside" padding="10px">
@@ -29,7 +31,10 @@ const Animals = () => {
         </GridItem>
       </Show>
       <GridItem area="main">
-        <AnimalGrid filterOptions={{ animalType, animalBehavior }} />
+        <AnimalGrid
+          filterOptions={{ animalType, animalBehavior }}
+          user={user}
+        />
       </GridItem>
     </Grid>
   );

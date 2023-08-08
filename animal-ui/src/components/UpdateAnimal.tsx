@@ -16,6 +16,7 @@ import {
   Checkbox,
 } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react";
+import useUsers from "../hooks/useUsers";
 
 interface Animal {
   id: number;
@@ -38,6 +39,7 @@ const UpdateAnimal = () => {
   const { animals, error } = useAnimals();
   const [animal, setAnimal] = useState<Animal | null>(null);
   const { id } = useParams<{ id: string }>();
+  const { user } = useUsers();
 
   useEffect(() => {
     const foundAnimal = animals.find(
@@ -115,7 +117,9 @@ const UpdateAnimal = () => {
       });
     }
   };
-
+  if (user?.Admin !== "Y") {
+    return <Text>User Not Authorized</Text>;
+  }
   return (
     <>
       {error && <Text>{error}</Text>}

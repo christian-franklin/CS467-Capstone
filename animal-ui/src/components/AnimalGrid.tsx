@@ -1,18 +1,18 @@
 import { SimpleGrid, Spinner, Text } from "@chakra-ui/react";
 import useAnimals from "../hooks/useAnimals";
 import AnimalCard from "./AnimalCard";
-import useUsers from "../hooks/useUsers";
+import { User } from "../hooks/useUsers";
 
 interface Props {
   filterOptions?: {
     animalType: string[];
     animalBehavior: string[];
   };
+  user: User | null;
 }
 
-const AnimalGrid = ({ filterOptions }: Props) => {
-  const { animals, error, isLoading } = useAnimals(filterOptions);
-  const { user } = useUsers();
+const AnimalGrid = ({ filterOptions, user }: Props) => {
+  const { animals, error, isLoading, deleteAnimal } = useAnimals(filterOptions);
 
   if (isLoading)
     return (
@@ -29,7 +29,12 @@ const AnimalGrid = ({ filterOptions }: Props) => {
       {error && <Text>{error}</Text>}
       <SimpleGrid columns={{ sm: 1, md: 3, lg: 3 }} padding="10px" spacing={10}>
         {animals.map((animal) => (
-          <AnimalCard key={animal.id} animal={animal} user={user} />
+          <AnimalCard
+            key={animal.id}
+            animal={animal}
+            user={user}
+            onDelete={deleteAnimal}
+          />
         ))}
       </SimpleGrid>
     </>

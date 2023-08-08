@@ -14,8 +14,13 @@ import {
 import logo from "../assets/logo.png";
 import ColorModeSwitch from "./ColorModeSwitch";
 import { useAuth0 } from "@auth0/auth0-react";
+import { User } from "~/hooks/useUsers";
 
-export default function NavBar() {
+interface Props {
+  user: User | null;
+}
+
+export default function NavBar({ user }: Props) {
   const { logout } = useAuth0();
 
   const handleLogout = () => {
@@ -33,6 +38,11 @@ export default function NavBar() {
 
           <Flex alignItems={"center"}>
             <Stack direction={"row"} spacing={7}>
+              {user?.Admin === "Y" && (
+                <Button variant="ghost" colorScheme="teal">
+                  <Link href="/create-animal/">Create Animal</Link>
+                </Button>
+              )}
               <ColorModeSwitch />
 
               <Menu>

@@ -20,6 +20,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { BiLike } from "react-icons/bi";
+import { useAuth0 } from "@auth0/auth0-react";
+import useUsers from "../hooks/useUsers";
+import { AiOutlineHeart } from "react-icons/ai";
+import { FcLike } from "react-icons/fc";
 
 interface Animal {
   id: number;
@@ -35,9 +39,13 @@ interface Animal {
 }
 
 const AnimalProfile = () => {
+  const { user } = useUsers();
+  const { getIdTokenClaims } = useAuth0();
   const { animals, error } = useAnimals();
   const [animal, setAnimal] = useState<Animal | null>(null);
-  const { id } = useParams<{ id: string }>();
+  const { id: paramId } = useParams<{ id: string }>();
+  const id = paramId || "";
+  const [liked, setLiked] = useState(user?.animals.includes(id));
 
   const getBadgeColor = (availability: string) => {
     switch (availability) {
@@ -55,12 +63,49 @@ const AnimalProfile = () => {
   };
 
   useEffect(() => {
+    setLiked(user?.animals.includes(id));
+  }, [user, id]);
+
+  useEffect(() => {
     const foundAnimal = animals.find(
       (animal) => Number(animal.id) === Number(id)
     );
 
     setAnimal(foundAnimal || null);
   }, [id, animals]);
+
+  const handleLike = async () => {
+    try {
+      const idTokenClaims = await getIdTokenClaims();
+      const idToken = idTokenClaims?.__raw;
+
+      const method = liked ? "DELETE" : "PATCH";
+      if (animal) {
+        const response = await fetch(
+          `https://animal-api-dot-cs467-capstone-393117.ue.r.appspot.com/users/${user?.id}/animals/${animal.id}`,
+          {
+            method: method,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          console.log(response);
+          setLiked(!liked); // Toggle the liked state
+        } else {
+          const data = await response.json();
+          console.error("Error updating animal like status:", data);
+        }
+      } else {
+        console.error("Animal is null or undefined");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (!animal) {
     return (
@@ -109,11 +154,14 @@ const AnimalProfile = () => {
               <ButtonGroup spacing="2">
                 <Button
                   variant="solid"
-                  colorScheme="blue"
-                  leftIcon={<BiLike />}
+                  colorScheme={liked ? "red" : "blue"}
+                  justifyContent="center"
+                  alignItems="center"
+                  onClick={handleLike}
                 >
-                  Like
+                  {liked ? <Box as={FcLike} /> : <Box as={AiOutlineHeart} />}
                 </Button>
+
                 {(animal.availability === "Available" ||
                   animal.availability === "Pending") && (
                   <Button variant="ghost" colorScheme="pink">

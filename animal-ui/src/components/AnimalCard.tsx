@@ -14,16 +14,19 @@ import {
   Badge,
   Box,
 } from "@chakra-ui/react";
-import { BiLike, BiSolidLike } from "react-icons/bi";
+import { AiOutlineHeart, AiFillDelete } from "react-icons/ai";
+import { FcLike } from "react-icons/fc";
 import { Animal } from "../hooks/useAnimals";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { User } from "../hooks/useUsers";
 import apiClient from "~/services/api-client";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface Props {
   animal: Animal;
   user: User | null;
+  onDelete: (animalId: number) => Promise<void>;
 }
 
 const getBadgeColor = (availability: string) => {
@@ -41,33 +44,52 @@ const getBadgeColor = (availability: string) => {
   }
 };
 
-const AnimalCard = ({ animal, user }: Props) => {
-  const [liked, setLiked] = useState(false);
+const AnimalCard = ({ animal, user, onDelete }: Props) => {
+  const [liked, setLiked] = useState(
+    user?.animals.includes(animal.id.toString())
+  );
   const cardBackgroundColor = useColorModeValue("gray.100", "gray.700");
   const cardBorderColor = useColorModeValue("gray.350", "gray.900");
+  const { getIdTokenClaims } = useAuth0();
 
   const handleLike = async () => {
     try {
+      const idTokenClaims = await getIdTokenClaims();
+      const idToken = idTokenClaims?.__raw;
+
+      const method = liked ? "DELETE" : "PATCH";
+
       const response = await fetch(
         `https://animal-api-dot-cs467-capstone-393117.ue.r.appspot.com/users/${user?.id}/animals/${animal.id}`,
         {
-          method: "PATCH",
+          method: method,
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
           },
-          body: JSON.stringify(user),
         }
       );
 
       if (response.ok) {
-        setLiked(!liked);
+        console.log(response);
+        setLiked(!liked); // Toggle the liked state
       } else {
         const data = await response.json();
-        console.error("Error liking animal:", data.message);
+        console.error("Error updating animal like status:", data);
       }
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleDelete = async () => {
+    const confirmation = window.confirm(
+      "Are you sure you want to delete this animal?"
+    );
+    if (!confirmation) {
+      return;
+    }
+    onDelete(animal.id);
   };
 
   return (
@@ -118,14 +140,28 @@ const AnimalCard = ({ animal, user }: Props) => {
             <Button
               variant="solid"
               colorScheme={liked ? "red" : "blue"}
-              leftIcon={liked ? <BiSolidLike /> : <BiLike />}
+              justifyContent="center"
+              alignItems="center"
               onClick={handleLike}
             >
-              Like
+              {liked ? <Box as={FcLike} /> : <Box as={AiOutlineHeart} />}
             </Button>
+
             <Button variant="ghost" colorScheme="blue">
               <Link to={`/animal-profile/${animal.id}`}>View Profile</Link>
             </Button>
+
+            {user?.Admin === "Y" && (
+              <Button variant="ghost" colorScheme="teal">
+                <Link to={`/update-animal/${animal.id}`}>Update</Link>
+              </Button>
+            )}
+
+            {user?.Admin === "Y" && (
+              <Button variant="ghost" colorScheme="red" onClick={handleDelete}>
+                <Box as={AiFillDelete} />
+              </Button>
+            )}
           </ButtonGroup>
         </CardFooter>
       </Card>

@@ -10,9 +10,11 @@ import {
   Flex,
   CheckboxGroup,
   Checkbox,
+  Text,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
+import useUsers from "../hooks/useUsers";
 
 interface AnimalFormState {
   image: string;
@@ -40,6 +42,7 @@ const getCurrentDate = () => {
 const CreateAnimal = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { user } = useUsers();
   const [formState, setFormState] = useState<AnimalFormState>({
     image: "",
     name: "",
@@ -125,6 +128,9 @@ const CreateAnimal = () => {
     }
   };
 
+  if (user?.Admin !== "Y") {
+    return <Text>User Not Authorized</Text>;
+  }
   return (
     <Flex justifyContent="center" alignItems="center" minHeight="100vh">
       <VStack

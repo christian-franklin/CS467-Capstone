@@ -74,7 +74,6 @@ const useAnimals = (filterOptions?: FilterOptions) => {
         if ((error as AxiosError).isAxiosError) {
           setError((error as AxiosError).message);
         } else {
-          // Handle non-Axios error case
           setError("An error occurred");
         }
         setLoading(false);
@@ -82,9 +81,37 @@ const useAnimals = (filterOptions?: FilterOptions) => {
     };
 
     fetchData();
-  }, [filterOptions, getIdTokenClaims]); // Include getIdTokenClaims here
+  }, [filterOptions, getIdTokenClaims]);
 
-  return { animals, error, isLoading };
+  const deleteAnimal = async (animalId: number) => {
+    try {
+      const idTokenClaims = await getIdTokenClaims();
+      if (idTokenClaims) {
+        const idToken = idTokenClaims.__raw;
+        apiClient.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${idToken}`;
+      }
+
+      const response = await apiClient.delete(`/animals/${animalId}`);
+
+      if (response.status === 204) {
+        setAnimals((prevAnimals) =>
+          prevAnimals.filter((animal) => animal.id !== animalId)
+        );
+      } else {
+        throw new Error("Failed to delete animal.");
+      }
+    } catch (error) {
+      if ((error as AxiosError).isAxiosError) {
+        setError((error as AxiosError).message);
+      } else {
+        setError("An error occurred while deleting the animal.");
+      }
+    }
+  };
+
+  return { animals, error, isLoading, deleteAnimal };
 };
 
 export default useAnimals;
