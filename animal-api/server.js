@@ -113,7 +113,9 @@ function post_animal(
   image,
   disposition,
   date_created,
-  availability
+  availability,
+  shelter_name,
+  shelter_email
 ) {
   var key = datastore.key(ANIMAL);
   const new_animal = {
@@ -126,6 +128,8 @@ function post_animal(
     disposition: disposition,
     date_created: date_created,
     availability: availability,
+    shelter_name: shelter_name,
+    shelter_email: shelter_email,
   };
   return datastore.save({ key: key, data: new_animal }).then(() => {
     console.log(new_animal);
@@ -140,6 +144,8 @@ function post_animal(
       disposition: new_animal.disposition,
       date_created: new_animal.date_created,
       availability: new_animal.availability,
+      shelter_name: new_animal.shelter_name,
+      shelter_email: new_animal.shelter_name,
     };
   });
 }
@@ -177,7 +183,9 @@ function patch_animal(
   image,
   disposition,
   date_created,
-  availability
+  availability,
+  shelter_name,
+  shelter_email
 ) {
   const key = datastore.key([ANIMAL, parseInt(animal_id, 10)]);
   const updated_animal = {
@@ -190,6 +198,8 @@ function patch_animal(
     disposition: disposition,
     date_created: date_created,
     availability: availability,
+    shelter_name: shelter_name,
+    shelter_email: shelter_email,
   };
   return datastore.save({ key: key, data: updated_animal }).then(() => {
     return {
@@ -203,6 +213,8 @@ function patch_animal(
       disposition: updated_animal.disposition,
       date_created: updated_animal.date_created,
       availability: updated_animal.availability,
+      shelter_name: updated_animal.shelter_name,
+      shelter_email: updated_animal.shelter_email,
     };
   });
 }
@@ -460,7 +472,9 @@ router.post("/animals", function (req, res) {
     req.body.image === undefined || req.body.image === null,
     req.body.disposition === undefined || req.body.disposition === null,
     req.body.date_created === undefined || req.body.date_created === null,
-    req.body.availability === undefined || req.body.availability === null)
+    req.body.availability === undefined || req.body.availability === null,
+    req.body.shelter_name === undefined || req.body.shelter_name === null,
+    req.body.shelter_email === undefined || req.body.shelter_email === null)
   ) {
     res.status(400).json({
       Error:
@@ -476,7 +490,9 @@ router.post("/animals", function (req, res) {
       req.body.image,
       req.body.disposition,
       req.body.date_created,
-      req.body.availability
+      req.body.availability,
+      req.body.shelter_name,
+      req.body.shelter_email
     ).then((animal) => {
       res.status(201).json(animal);
     });
@@ -549,7 +565,9 @@ router.patch("/animals/:animal_id", function (req, res) {
     req.body.image === undefined || req.body.image === null,
     req.body.disposition === undefined || req.body.disposition === null,
     req.body.date_created === undefined || req.body.date_created === null,
-    req.body.availability === undefined || req.body.availability === null)
+    req.body.availability === undefined || req.body.availability === null,
+    req.body.shelter_name === undefined || req.body.shelter_name === null,
+    req.body.shelter_email === undefined || req.body.shelter_email == null)
   )
     res.status(400).json({
       Error:
@@ -571,7 +589,9 @@ router.patch("/animals/:animal_id", function (req, res) {
           req.body.image,
           req.body.disposition,
           req.body.date_created,
-          req.body.availability
+          req.body.availability,
+          req.body.shelter_name,
+          req.body.shelter_email
         ).then((key) => {
           console.log(key);
           res.status(200).json(key);
