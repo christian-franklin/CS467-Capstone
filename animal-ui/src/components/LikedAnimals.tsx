@@ -7,8 +7,10 @@ const LikedAnimals = () => {
   const { animals, error, isLoading, deleteAnimal } = useAnimals();
   const { user } = useUsers();
 
-  const likedAnimals = animals.filter((animal) =>
-    user?.animals.includes(animal.id.toString())
+  const likedAnimals = animals.filter(
+    (animal) =>
+      Array.isArray(user?.animals) &&
+      user?.animals.includes(animal.id.toString())
   );
 
   if (isLoading)
