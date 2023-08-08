@@ -242,13 +242,13 @@ function get_users() {
 
 async function user_add_animal(animal_id, u_id) {
   //let user = await get_user_id(user_sub);
-  let user = await get_user(us_id);
+  let [user] = await get_user(u_id);
 
   if (!user) {
     throw new Error("User not found");
   }
 
-  const user_id = user[datastore.KEY].id;
+  const user_id = user.id;
   const user_key = datastore.key([USER, parseInt(user_id, 10)]);
 
   console.log("Updating user", user_key);
@@ -317,15 +317,13 @@ async function get_user(id) {
 
 async function user_remove_animal(animal_id, u_id) {
   // let user = await get_user_id(user_sub);
-  let user = await get_user(u_id);
-
+  let [user] = await get_user(u_id);
   if (!user) {
     throw new Error("User not found");
   }
-
-  const user_id = user[datastore.KEY].id;
+  
+  const user_id = user.id;
   const user_key = datastore.key([USER, parseInt(user_id, 10)]);
-
   console.log("Updating user", user_key);
 
   // Check if the animal_id exists in the user's animals array
@@ -401,7 +399,7 @@ router.get("/users/:id", cors(), findJwt, async (req, res) => {
 
 // PATCH user - add animal to user
 router.patch(
-  "/users/:sub/animals/:animal_id",
+  "/users/:user_id/animals/:animal_id",
   cors(),
   checkJwt,
   async function (req, res) {
@@ -419,7 +417,7 @@ router.patch(
       try {
         const updateSuccess = await user_add_animal(
           req.params.animal_id,
-          userSub
+          req.params.user_id
         );
 
         if (updateSuccess) {
@@ -442,7 +440,7 @@ router.patch(
 
 // DELETE user - remove animal from user
 router.delete(
-  "/users/:sub/animals/:animal_id",
+  "/users/:user_id/animals/:animal_id",
   cors(),
   checkJwt,
   async function (req, res) {
@@ -460,7 +458,7 @@ router.delete(
       try {
         const updateSuccess = await user_remove_animal(
           req.params.animal_id,
-          userSub
+          req.params.user_id
         );
 
         if (updateSuccess) {
