@@ -2,7 +2,6 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
-  FormHelperText,
   FormLabel,
   Input,
   Textarea,
@@ -24,6 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useToast } from "@chakra-ui/react";
 import useAnimals from "../hooks/useAnimals";
 
 interface Animal {
@@ -58,6 +58,7 @@ const AdoptionForm = () => {
   const { animals, error } = useAnimals();
   const [animal, setAnimal] = useState<Animal | null>(null);
   const { id } = useParams<{ id: string }>();
+  const toast = useToast();
 
   useEffect(() => {
     const foundAnimal = animals.find(
@@ -80,6 +81,23 @@ const AdoptionForm = () => {
   ) => setFormInput({ ...formInput, [e.target.name]: e.target.value });
 
   const isError = Object.values(formInput).some((input) => input === "");
+
+  const handleSubmit = () => {
+    if (isError) {
+    } else {
+      toast({
+        title: "Adoption request submitted.",
+        description: "Thank you for your interest. We'll get back to you soon.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+    }
+  };
 
   return (
     <Grid placeItems="center" height="100vh">
@@ -125,8 +143,9 @@ const AdoptionForm = () => {
 
           <VStack spacing={4} mt={6}>
             <ButtonGroup>
-              <Button colorScheme="blue">Submit</Button>
-
+              <Button colorScheme="blue" onClick={handleSubmit}>
+                Submit
+              </Button>
               <Button colorScheme="red" onClick={onToggle}>
                 Cancel
               </Button>

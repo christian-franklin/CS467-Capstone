@@ -7,6 +7,7 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import ViewFavorites from "./ViewFavorites";
 
 interface Props {
   animalType: string[];
@@ -78,6 +79,7 @@ const FilterList = ({
           </Checkbox>
         </CheckboxGroup>
       </VStack>
+      <ViewFavorites />
     </Box>
   );
 };
