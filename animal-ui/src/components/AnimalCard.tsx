@@ -14,12 +14,16 @@ import {
   Badge,
   Box,
 } from "@chakra-ui/react";
-import { BiLike } from "react-icons/bi";
+import { BiLike, BiSolidLike } from "react-icons/bi";
 import { Animal } from "../hooks/useAnimals";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { User } from "../hooks/useUsers";
+import apiClient from "~/services/api-client";
 
 interface Props {
   animal: Animal;
+  user: User | null;
 }
 
 const getBadgeColor = (availability: string) => {
@@ -37,9 +41,34 @@ const getBadgeColor = (availability: string) => {
   }
 };
 
-const AnimalCard = ({ animal }: Props) => {
+const AnimalCard = ({ animal, user }: Props) => {
+  const [liked, setLiked] = useState(false);
   const cardBackgroundColor = useColorModeValue("gray.100", "gray.700");
   const cardBorderColor = useColorModeValue("gray.350", "gray.900");
+
+  const handleLike = async () => {
+    try {
+      const response = await fetch(
+        `https://animal-api-dot-cs467-capstone-393117.ue.r.appspot.com/users/${user?.sub}/animals/${animal.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(user),
+        }
+      );
+
+      if (response.ok) {
+        setLiked(!liked);
+      } else {
+        const data = await response.json();
+        console.error("Error liking animal:", data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -86,7 +115,12 @@ const AnimalCard = ({ animal }: Props) => {
         <Divider borderWidth="1px" borderColor="gray.500" />
         <CardFooter>
           <ButtonGroup spacing="2">
-            <Button variant="solid" colorScheme="blue" leftIcon={<BiLike />}>
+            <Button
+              variant="solid"
+              colorScheme={liked ? "red" : "blue"}
+              leftIcon={liked ? <BiSolidLike /> : <BiLike />}
+              onClick={handleLike}
+            >
               Like
             </Button>
             <Button variant="ghost" colorScheme="blue">
