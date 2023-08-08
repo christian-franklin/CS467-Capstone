@@ -242,7 +242,7 @@ function get_users() {
 
 async function user_add_animal(animal_id, u_id) {
   //let user = await get_user_id(user_sub);
-  let user = await get_user(us_id);
+  let user = await get_user(u_id);
 
   if (!user) {
     throw new Error("User not found");
