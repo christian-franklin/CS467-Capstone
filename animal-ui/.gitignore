@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+cs467-capstone-393117-5eaafad445b8.json
 
 # Editor directories and files
 .vscode/*
