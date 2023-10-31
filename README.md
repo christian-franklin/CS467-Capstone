@@ -1,5 +1,5 @@
 # Animal Adoption Dating App - Pawfect Match
-Hosted website available until 9/30/2023:
+Hosted website:
 https://www.pawfectmatcheroo.com  
 
 Login Credentials:  
